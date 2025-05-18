@@ -29,11 +29,15 @@ def login():
         if username in users and users[username]["password"] == password:
             st.success(f"Welcome, {username}!")
             st.session_state.username = username
+            st.experimental_rerun()  # Rerun to refresh app state after login
         else:
             st.error("Invalid credentials.")
 
 # Main routing
 def main():
+    # Debug info (optional)
+    # st.write("Session state keys:", list(st.session_state.keys()))
+
     if "username" not in st.session_state:
         login()
         return
@@ -41,6 +45,7 @@ def main():
     username = st.session_state.username
     users = load_users()
 
+    # Admin always has all apps
     if username == "admin":
         available_apps = {
             "TimeGuardian": True,
@@ -66,13 +71,12 @@ def main():
     app_choice = st.sidebar.selectbox("Apps", app_list)
 
     st.sidebar.write("👤 Logged in as:", username)
+
     if st.sidebar.button("Logout"):
         st.session_state.pop("username", None)  # Safe remove
-        st.experimental_rerun()
-    # if st.sidebar.button("Logout"):
-    #     del st.session_state.username
-    #     st.experimental_rerun()
+        st.experimental_rerun()  # Refresh app after logout
 
+    # Route to chosen app
     if app_choice == "Admin Dashboard":
         admin_dashboard(username)
     elif app_choice == "TimeGuardian":
@@ -86,6 +90,100 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+# import streamlit as st
+# from apps.timeguardian.main import timeguardian_app
+# from apps.notenest.main import notenest_app
+# from apps.moneyflow.main import moneyflow_app
+# from apps.habitpulse.main import habitpulse_app
+# from apps.admin.main import admin_dashboard
+
+# import json
+# import os
+
+# # Load users data
+# def load_users():
+#     filepath = "data/users.json"
+#     if not os.path.exists(filepath):
+#         return {}
+#     with open(filepath, "r") as f:
+#         return json.load(f)
+
+# # Login system
+# def login():
+#     st.title("🔐 DailyPilot Login")
+
+#     users = load_users()
+#     username = st.text_input("Username")
+#     password = st.text_input("Password", type="password")
+#     login_button = st.button("Login")
+
+#     if login_button:
+#         if username in users and users[username]["password"] == password:
+#             st.success(f"Welcome, {username}!")
+#             st.session_state.username = username
+#         else:
+#             st.error("Invalid credentials.")
+
+# # Main routing
+# def main():
+#     if "username" not in st.session_state:
+#         login()
+#         return
+
+#     username = st.session_state.username
+#     users = load_users()
+
+#     if username == "admin":
+#         available_apps = {
+#             "TimeGuardian": True,
+#             "NoteNest": True,
+#             "MoneyFlow": True,
+#             "HabitPulse": True
+#         }
+#     else:
+#         available_apps = users.get(username, {}).get("apps", {})
+
+#     st.sidebar.title("📱 Select App")
+#     app_list = ["Admin Dashboard"] if username == "admin" else []
+
+#     if available_apps.get("TimeGuardian"):
+#         app_list.append("TimeGuardian")
+#     if available_apps.get("NoteNest"):
+#         app_list.append("NoteNest")
+#     if available_apps.get("MoneyFlow"):
+#         app_list.append("MoneyFlow")
+#     if available_apps.get("HabitPulse"):
+#         app_list.append("HabitPulse")
+
+#     app_choice = st.sidebar.selectbox("Apps", app_list)
+
+#     st.sidebar.write("👤 Logged in as:", username)
+#     if st.sidebar.button("Logout"):
+#         st.session_state.pop("username", None)  # Safe remove
+#         st.experimental_rerun()
+#     # if st.sidebar.button("Logout"):
+#     #     del st.session_state.username
+#     #     st.experimental_rerun()
+
+#     if app_choice == "Admin Dashboard":
+#         admin_dashboard(username)
+#     elif app_choice == "TimeGuardian":
+#         timeguardian_app(username)
+#     elif app_choice == "NoteNest":
+#         notenest_app(username)
+#     elif app_choice == "MoneyFlow":
+#         moneyflow_app(username)
+#     elif app_choice == "HabitPulse":
+#         habitpulse_app(username)
+
+# if __name__ == "__main__":
+#     main()
 
 
 

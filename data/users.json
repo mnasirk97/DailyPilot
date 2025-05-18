@@ -1,0 +1,12 @@
+{
+    "admin": {
+      "password": "admin123",
+      "apps": {
+        "TimeGuardian": true,
+        "NoteNest": true,
+        "MoneyFlow": true,
+        "HabitPulse": true
+      }
+    }
+  }
+  

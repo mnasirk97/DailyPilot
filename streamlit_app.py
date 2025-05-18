@@ -67,8 +67,11 @@ def main():
 
     st.sidebar.write("👤 Logged in as:", username)
     if st.sidebar.button("Logout"):
-        del st.session_state.username
+        st.session_state.pop("username", None)  # Safe remove
         st.experimental_rerun()
+    # if st.sidebar.button("Logout"):
+    #     del st.session_state.username
+    #     st.experimental_rerun()
 
     if app_choice == "Admin Dashboard":
         admin_dashboard(username)
